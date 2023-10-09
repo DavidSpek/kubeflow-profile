@@ -22,5 +22,5 @@ spec:
             inline_code: |-
               function envoy_on_request(request_handle)
                 headers = request_handle:headers()
-                request_handle:headers():replace("kubeflow-request-source-namespace", "{{ .Request.Namespace }}")
+                request_handle:headers():replace("kubeflow-request-source-namespace", "{{ .Release.Namespace }}")
               end

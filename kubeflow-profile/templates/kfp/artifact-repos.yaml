@@ -13,4 +13,4 @@ data:
       endpoint: s3.amazonaws.com
       region: us-east-2
       insecure: false
-      keyFormat: "pipelines/{{workflow.namespace}}/pipelines/{{workflow.name}}/{{pod.name}}"
+      keyFormat: "pipelines/{{ `{{workflow.namespace}}` }}/pipelines/{{ `{{workflow.name}}` }}/{{ `{{pod.name}}` }}"

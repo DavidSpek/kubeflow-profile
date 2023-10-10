@@ -11,3 +11,14 @@ serviceAccount:
     create: true
     # Annotations to add to the service account
     annotations: {}
+
+provider: ""
+
+pipelinesBucketName: ""
+
+aws:
+  iam:
+    create: false
+    accountID: ""
+    oidcIssuer: ""
+    clusterName: ""

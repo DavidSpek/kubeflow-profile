@@ -1,0 +1,36 @@
+{{- if and .Values.aws.iam.create (eq .Values.provider "aws") }}
+apiVersion: iam.services.k8s.aws/v1alpha1
+kind: Role
+metadata:
+  name: {{ .Values.aws.iam.clusterName }}-kubeflow-assumable-role-ns-{{ .Release.Namespace }}
+spec:
+  maxSessionDuration: 3600
+  name: {{ .Values.aws.iam.clusterName }}-kubeflow-assumable-role-ns-{{ .Release.Namespace }}
+  path: /
+  policies:
+    - arn:aws:iam::{{ .Values.aws.iam.accountID }}:policy/{{ .Values.aws.iam.clusterName }}-kubeflow-s3-iam-policy-ns-{{ .Release.Namespace }}
+  tags:
+    - key: kubeflow-namespace
+      value: {{ .Release.Namespace }}
+  assumeRolePolicyDocument: |
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "",
+          "Effect": "Allow",
+          "Principal": {
+            "Federated": "arn:aws:iam::{{ .Values.aws.iam.accountID }}:oidc-provider/{{ .Values.aws.iam.oidcIssuer }}"
+          },
+          "Action": "sts:AssumeRoleWithWebIdentity",
+          "Condition": {
+            "StringLike": {
+              "{{ .Values.aws.iam.oidcIssuer }}:sub": [
+                "system:serviceaccount:{{ .Release.Namespace }}:default-editor"
+              ]
+            }
+          }
+        }
+      ]
+    }
+{{- end }}

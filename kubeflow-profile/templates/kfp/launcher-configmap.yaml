@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: kfp-launcher
 data:
-  defaultPipelineRoot: s3://plrl-d-david-capi-kubeflow-pipelines/pipelines/david
+  defaultPipelineRoot: s3://{{ .Values.pipelinesBucketName }}/pipelines/{{ .Release.Namespace }}

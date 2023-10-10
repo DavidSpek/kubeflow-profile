@@ -1,0 +1,50 @@
+{{- if and .Values.aws.iam.create (eq .Values.provider "aws") }}
+apiVersion: iam.services.k8s.aws/v1alpha1
+kind: Policy
+metadata:
+  name: {{ .Values.aws.iam.clusterName }}-kubeflow-s3-iam-policy-ns-{{ .Release.Namespace }}
+spec:
+  description: policy for namespace S3 access
+  name: {{ .Values.aws.iam.clusterName }}-kubeflow-s3-iam-policy-ns-{{ .Release.Namespace }}
+  path: /
+  policyDocument: |
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "AllowUserToSeeBucketListInTheConsole",
+          "Action": ["s3:ListAllMyBuckets", "s3:GetBucketLocation"],
+          "Effect": "Allow",
+          "Resource": ["arn:aws:s3:::*"]
+        },
+        {
+          "Sid": "AllowRootListingOfCompanyBucket",
+          "Action": ["s3:ListBucket"],
+          "Effect": "Allow",
+          "Resource": ["arn:aws:s3:::{{ .Values.pipelinesBucketName }}"]
+        },
+        {
+          "Sid": "AllowRootAndHomeListingOfCompanyBucket",
+          "Action": ["s3:ListBucket"],
+          "Effect": "Allow",
+          "Resource": ["arn:aws:s3:::{{ .Values.pipelinesBucketName }}"],
+          "Condition":{"StringEquals":{"s3:prefix":["","pipelines/", "pipelines/{{ .Release.Namespace }}"],"s3:delimiter":["/"]}}
+        },
+        {
+          "Sid": "AllowListingOfUserFolder",
+          "Action": ["s3:ListBucket"],
+          "Effect": "Allow",
+          "Resource": ["arn:aws:s3:::{{ .Values.pipelinesBucketName }}"],
+          "Condition":{"StringLike":{"s3:prefix":["pipelines/{{ .Release.Namespace }}/*"]}}
+        },
+        {
+          "Sid": "kubeflowNS{{ .Release.Namespace | replace "-" "" }}",
+          "Effect": "Allow",
+          "Action": "s3:*",
+          "Resource": [
+            "arn:aws:s3:::{{ .Values.pipelinesBucketName }}/pipelines/{{ .Release.Namespace }}/*"
+          ]
+        }
+      ]
+    }
+{{- end }}

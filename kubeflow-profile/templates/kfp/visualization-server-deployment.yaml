@@ -11,38 +11,33 @@ spec:
       app: ml-pipeline-visualizationserver
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: ml-pipeline-visualizationserver
     spec:
       containers:
         - name: ml-pipeline-visualizationserver
-          image: gcr.io/ml-pipeline/visualization-server:1.7.1
+          securityContext:
+            {{- toYaml .Values.pipelines.deployments.visualization.securityContext | nindent 12 }}
+          imagePullPolicy: {{ .Values.pipelines.deployments.visualization.image.pullPolicy }}
+          image: "{{ .Values.pipelines.deployments.visualization.image.repository }}:{{ .Values.pipelines.deployments.visualization.image.tag }}"
           ports:
             - name: vis-server
               containerPort: 8888
               protocol: TCP
           resources:
-            limits:
-              cpu: 500m
-              memory: 1Gi
-            requests:
-              cpu: 50m
-              memory: 200Mi
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          imagePullPolicy: IfNotPresent
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
+          {{- toYaml .Values.pipelines.deployments.visualization.resources | nindent 12 }}
       serviceAccountName: default-editor
-      serviceAccount: default-editor
-      securityContext: {}
-      schedulerName: default-scheduler
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
+      securityContext:
+        {{- toYaml .Values.pipelines.deployments.visualization.podSecurityContext | nindent 8 }}
+      {{- with .Values.pipelines.deployments.visualization.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pipelines.deployments.visualization.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pipelines.deployments.visualization.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

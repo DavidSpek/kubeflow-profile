@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: kubeflow-profile
+  namespace: argo-cd
+spec:
+  generators:
+  - plugin:
+      configMapRef:
+        name: kubeflow-profiles
+      requeueAfterSeconds: 10
+  template:
+    metadata:
+      name: 'kubeflow-profile-{{metadata.name}}'
+      annotations:
+        owner: '{{spec.owner.name}}'
+    spec:
+      project: default
+      syncPolicy:
+        # syncOptions:
+        # - ServerSideApply=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        helm:
+          parameters:
+          - name: email
+            value: '{{spec.owner.name}}'
+          - name: provider
+            value: aws
+          - name: pipelinesBucketName
+            value: plrl-d-david-capi-kubeflow-pipelines
+          - name: aws.iam.create
+            value: "true"
+          - name: aws.iam.accountID
+            value: "312272277431"
+          - name: aws.iam.oidcIssuer
+            value: oidc.eks.us-east-2.amazonaws.com/id/E35206FD9CD3F423AD4E1FB984811902
+          - name: aws.iam.clusterName
+            value: david-capi
+        repoURL: https://github.com/DavidSpek/kubeflow-profile.git
+        targetRevision: HEAD
+        path: kubeflow-profile
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{metadata.name}}'

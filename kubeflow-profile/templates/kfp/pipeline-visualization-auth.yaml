@@ -7,7 +7,7 @@ spec:
     - from:
         - source:
             principals:
-              - cluster.local/ns/kubeflow/sa/ml-pipeline
+              - cluster.local/ns/kubeflow/sa/{{ .Values.pipelines.apiServiceAccountName }}
   selector:
     matchLabels:
       app: ml-pipeline-visualizationserver

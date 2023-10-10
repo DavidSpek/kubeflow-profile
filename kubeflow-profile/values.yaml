@@ -1,3 +1,6 @@
+nameOverride: ""
+fullnameOverride: ""
+
 email: ""
 
 serviceAccount:
@@ -13,6 +16,47 @@ serviceAccount:
     annotations: {}
 
 provider: ""
+
+pipelines:
+  # enabled: true
+  apiServiceAccountName: ml-pipeline
+
+  deployments:
+    visualization:
+      image:
+        repository: gcr.io/ml-pipeline/visualization-server
+        tag: 2.0.1
+        pullPolicy: IfNotPresent
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 50m
+          memory: 200Mi
+      securityContext: {}
+      podSecurityContext: {}
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+    uiArtifact:
+      image:
+        repository: gcr.io/ml-pipeline/frontend
+        tag: 2.0.1
+        pullPolicy: IfNotPresent
+      resources:
+        limits:
+          cpu: 100m
+          memory: 500Mi
+        requests:
+          cpu: 10m
+          memory: 70Mi
+      securityContext: {}
+      podSecurityContext: {}
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+
 
 pipelinesBucketName: ""
 

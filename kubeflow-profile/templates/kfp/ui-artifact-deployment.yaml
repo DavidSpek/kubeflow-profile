@@ -17,32 +17,28 @@ spec:
     spec:
       containers:
         - name: ml-pipeline-ui-artifact
-          image: gcr.io/ml-pipeline/frontend:1.7.1
+          securityContext:
+            {{- toYaml .Values.pipelines.deployments.uiArtifact.securityContext | nindent 12 }}
+          imagePullPolicy: {{ .Values.pipelines.deployments.uiArtifact.image.pullPolicy }}
+          image: "{{ .Values.pipelines.deployments.uiArtifact.image.repository }}:{{ .Values.pipelines.deployments.uiArtifact.image.tag }}"
           ports:
             - name: artifact-ui
               containerPort: 3000
               protocol: TCP
           resources:
-            limits:
-              cpu: 100m
-              memory: 500Mi
-            requests:
-              cpu: 10m
-              memory: 70Mi
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          imagePullPolicy: IfNotPresent
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
+            {{- toYaml .Values.pipelines.deployments.uiArtifact.resources | nindent 12 }}
       serviceAccountName: default-editor
-      serviceAccount: default-editor
-      securityContext: {}
-      schedulerName: default-scheduler
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
-  revisionHistoryLimit: 10
-  progressDeadlineSeconds: 600
+      securityContext:
+        {{- toYaml .Values.pipelines.deployments.uiArtifact.podSecurityContext | nindent 8 }}
+      {{- with .Values.pipelines.deployments.uiArtifact.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pipelines.deployments.uiArtifact.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pipelines.deployments.uiArtifact.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

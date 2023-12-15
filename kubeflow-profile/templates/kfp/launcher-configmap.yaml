@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: kfp-launcher
 data:
-  defaultPipelineRoot: s3://{{ .Values.pipelines.bucketName }}/pipelines/{{ .Release.Namespace }}
+  defaultPipelineRoot: {{ .Values.pipelines.storage.provider }}://{{ .Values.pipelines.storage.bucketName }}/{{ if .Values.pipelines.storage.keyPrefix }}{{ .Values.pipelines.storage.keyPrefix }}/{{ end }}{{ .Release.Namespace }}

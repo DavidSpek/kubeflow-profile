@@ -21,7 +21,18 @@ pipelines:
   # enabled: true
   apiServiceAccountName: ml-pipeline
 
-  bucketName: ""
+  storage:
+    provider: s3
+    bucketName: ""
+    keyPrefix: pipelines
+    endpoint: ""
+    region: ""
+    insecure: false
+
+  metadata:
+    grpcService:
+      host: metadata-grpc-service
+      port: 8080
 
   deployments:
     visualization:
@@ -41,6 +52,7 @@ pipelines:
       nodeSelector: {}
       tolerations: []
       affinity: {}
+      serviceAccountName: default-editor
     uiArtifact:
       image:
         repository: gcr.io/ml-pipeline/frontend
@@ -58,10 +70,26 @@ pipelines:
       nodeSelector: {}
       tolerations: []
       affinity: {}
+      serviceAccountName: default-editor
 
 aws:
+  region: us-east-2
   iam:
     create: false
     accountID: ""
     oidcIssuer: ""
     clusterName: ""
+
+kubeflow:
+  namespace: kubeflow
+
+knative:
+  namespace: knative
+
+istio:
+  clusterDomain: cluster.local
+  ingressServiceAccount: kubeflow-gateway
+  ingressNamespace: kubeflow
+  oidc:
+    issuer: ""
+    jwksURI: ""

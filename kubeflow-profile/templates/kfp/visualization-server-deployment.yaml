@@ -26,7 +26,7 @@ spec:
               protocol: TCP
           resources:
           {{- toYaml .Values.pipelines.deployments.visualization.resources | nindent 12 }}
-      serviceAccountName: default-editor
+      serviceAccountName: {{ .Values.pipelines.deployments.visualization.serviceAccountName }}
       securityContext:
         {{- toYaml .Values.pipelines.deployments.visualization.podSecurityContext | nindent 8 }}
       {{- with .Values.pipelines.deployments.visualization.nodeSelector }}

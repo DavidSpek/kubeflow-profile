@@ -7,5 +7,5 @@ spec:
     - fromHeaders:
       - name: cookie
         prefix: IdToken=
-      issuer: https://oidc.plural.sh/
-      jwksUri: https://oidc.plural.sh/.well-known/jwks.json
+      issuer: {{ .Values.istio.oidc.issuer }}
+      jwksUri: {{ .Values.istio.oidc.jwksURI }}

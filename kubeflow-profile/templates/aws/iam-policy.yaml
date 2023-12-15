@@ -21,28 +21,28 @@ spec:
           "Sid": "AllowRootListingOfCompanyBucket",
           "Action": ["s3:ListBucket"],
           "Effect": "Allow",
-          "Resource": ["arn:aws:s3:::{{ .Values.pipelines.bucketName }}"]
+          "Resource": ["arn:aws:s3:::{{ .Values.pipelines.storage.bucketName }}"]
         },
         {
           "Sid": "AllowRootAndHomeListingOfCompanyBucket",
           "Action": ["s3:ListBucket"],
           "Effect": "Allow",
-          "Resource": ["arn:aws:s3:::{{ .Values.pipelines.bucketName }}"],
-          "Condition":{"StringEquals":{"s3:prefix":["","pipelines/", "pipelines/{{ .Release.Namespace }}"],"s3:delimiter":["/"]}}
+          "Resource": ["arn:aws:s3:::{{ .Values.pipelines.storage.bucketName }}"],
+          "Condition":{"StringEquals":{"s3:prefix":["", {{ if .Values.pipelines.storage.keyPrefix }}"{{ .Values.pipelines.storage.keyPrefix }}/", {{ end }}"{{ if .Values.pipelines.storage.keyPrefix }}{{ .Values.pipelines.storage.keyPrefix }}/{{ end }}{{ .Release.Namespace }}"],"s3:delimiter":["/"]}}
         },
         {
           "Sid": "AllowListingOfUserFolder",
           "Action": ["s3:ListBucket"],
           "Effect": "Allow",
-          "Resource": ["arn:aws:s3:::{{ .Values.pipelines.bucketName }}"],
-          "Condition":{"StringLike":{"s3:prefix":["pipelines/{{ .Release.Namespace }}/*"]}}
+          "Resource": ["arn:aws:s3:::{{ .Values.pipelines.storage.bucketName }}"],
+          "Condition":{"StringLike":{"s3:prefix":["{{ if .Values.pipelines.storage.keyPrefix }}{{ .Values.pipelines.storage.keyPrefix }}/{{ end }}{{ .Release.Namespace }}/*"]}}
         },
         {
           "Sid": "kubeflowNS{{ .Release.Namespace | replace "-" "" }}",
           "Effect": "Allow",
           "Action": "s3:*",
           "Resource": [
-            "arn:aws:s3:::{{ .Values.pipelines.bucketName }}/pipelines/{{ .Release.Namespace }}/*"
+            "arn:aws:s3:::{{ .Values.pipelines.storage.bucketName }}/{{ if .Values.pipelines.storage.keyPrefix }}{{ .Values.pipelines.storage.keyPrefix }}/{{ end }}{{ .Release.Namespace }}/*"
           ]
         }
       ]

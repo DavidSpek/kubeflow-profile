@@ -7,10 +7,20 @@ metadata:
 data:
   default-v1: |-
     archiveLogs: true
+    {{- if eq .Values.pipelines.storage.provider "s3" }}
     s3:
-      bucket: {{ .Values.pipelines.bucketName }}
-      keyPrefix: pipelines
+      bucket: {{ .Values.pipelines.storage.bucketName }}
+      {{- if .Values.pipelines.storage.keyPrefix }}
+      keyPrefix: {{ .Values.pipelines.storage.keyPrefix }}
+      {{- end }}
+      {{- if eq .Values.provider "aws" }}
       endpoint: s3.amazonaws.com
-      region: us-east-2
+      region: {{ .Values.aws.region }}
       insecure: false
-      keyFormat: "pipelines/{{ `{{workflow.namespace}}` }}/pipelines/{{ `{{workflow.name}}` }}/{{ `{{pod.name}}` }}"
+      {{- else }}
+      endpoint: {{ .Values.pipelines.storage.endpoint }}
+      region: {{ .Values.pipelines.storage.region }}
+      insecure: {{ .Values.pipelines.storage.insecure }}
+      {{- end }}
+      keyFormat: "{{ if .Values.pipelines.storage.keyPrefix }}{{ .Values.pipelines.storage.keyPrefix }}/{{ end }}{{ `{{workflow.namespace}}` }}/{{ `{{workflow.name}}` }}/{{ `{{pod.name}}` }}"
+    {{- end }}

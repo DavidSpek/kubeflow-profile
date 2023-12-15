@@ -7,7 +7,7 @@ spec:
     - from:
         - source:
             principals:
-              - cluster.local/ns/kubeflow/sa/{{ .Values.pipelines.apiServiceAccountName }}
+              - {{ .Values.istio.clusterDomain }}/ns/{{ .Values.kubeflow.namespace }}/sa/{{ .Values.pipelines.apiServiceAccountName }}
   selector:
     matchLabels:
       app: ml-pipeline-visualizationserver

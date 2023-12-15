@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: metadata-grpc-configmap
 data:
-  METADATA_GRPC_SERVICE_HOST: metadata-grpc-service.kubeflow
-  METADATA_GRPC_SERVICE_PORT: '8080'
+  METADATA_GRPC_SERVICE_HOST: {{ .Values.pipelines.metadata.grpcService.host }}.{{ .Values.kubeflow.namespace }}
+  METADATA_GRPC_SERVICE_PORT: {{ .Values.pipelines.metadata.grpcService.port | quote }}

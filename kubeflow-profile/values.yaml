@@ -21,6 +21,8 @@ pipelines:
   # enabled: true
   apiServiceAccountName: ml-pipeline
 
+  bucketName: ""
+
   deployments:
     visualization:
       image:
@@ -56,9 +58,6 @@ pipelines:
       nodeSelector: {}
       tolerations: []
       affinity: {}
-
-
-pipelinesBucketName: ""
 
 aws:
   iam:

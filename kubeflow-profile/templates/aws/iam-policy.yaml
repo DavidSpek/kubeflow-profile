@@ -21,20 +21,20 @@ spec:
           "Sid": "AllowRootListingOfCompanyBucket",
           "Action": ["s3:ListBucket"],
           "Effect": "Allow",
-          "Resource": ["arn:aws:s3:::{{ .Values.pipelinesBucketName }}"]
+          "Resource": ["arn:aws:s3:::{{ .Values.pipelines.bucketName }}"]
         },
         {
           "Sid": "AllowRootAndHomeListingOfCompanyBucket",
           "Action": ["s3:ListBucket"],
           "Effect": "Allow",
-          "Resource": ["arn:aws:s3:::{{ .Values.pipelinesBucketName }}"],
+          "Resource": ["arn:aws:s3:::{{ .Values.pipelines.bucketName }}"],
           "Condition":{"StringEquals":{"s3:prefix":["","pipelines/", "pipelines/{{ .Release.Namespace }}"],"s3:delimiter":["/"]}}
         },
         {
           "Sid": "AllowListingOfUserFolder",
           "Action": ["s3:ListBucket"],
           "Effect": "Allow",
-          "Resource": ["arn:aws:s3:::{{ .Values.pipelinesBucketName }}"],
+          "Resource": ["arn:aws:s3:::{{ .Values.pipelines.bucketName }}"],
           "Condition":{"StringLike":{"s3:prefix":["pipelines/{{ .Release.Namespace }}/*"]}}
         },
         {
@@ -42,7 +42,7 @@ spec:
           "Effect": "Allow",
           "Action": "s3:*",
           "Resource": [
-            "arn:aws:s3:::{{ .Values.pipelinesBucketName }}/pipelines/{{ .Release.Namespace }}/*"
+            "arn:aws:s3:::{{ .Values.pipelines.bucketName }}/pipelines/{{ .Release.Namespace }}/*"
           ]
         }
       ]

@@ -4,7 +4,8 @@ metadata:
   name: kubeflow-request-auth
 spec:
   jwtRules:
-    - fromHeaders:
+    - forwardOriginalToken: true # Needed so that XSRF works in jupyterlab for some reason
+      fromHeaders:
       - name: cookie
         prefix: IdToken=
       issuer: {{ .Values.istio.oidc.issuer }}
